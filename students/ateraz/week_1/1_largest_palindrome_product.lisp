@@ -1,7 +1,7 @@
 (defun largest-palindrome-product (num-digits)
   "Compute largest palindrom made from product of two num-digits numbers."
-  (let* ((min-value (expt 10 (- num-digits 1)))
-         (max-value (- (* 10 min-value) 1))
+  (let* ((min-value (expt 10 (1- num-digits)))
+         (max-value (1- (* 10 min-value)))
          (start max-value)
          (step 1))
 
@@ -10,11 +10,10 @@
       ; 2 * num-digits, thus it is divisible by 11. This allows to start
       ; with first number lower or equal than max-value such that
       ; start % 11 == 0 and skip all i that are not divisible by 11.
-      (progn
-        (setq step 11)
-        (loop
-          while (/= 0 (mod start step))
-          do (decf start))))
+      (setq step 11)
+      (loop
+        while (/= 0 (mod start step))
+        do (decf start)))
 
     (loop
       with max-product = min-value and max-j = min-value
@@ -27,10 +26,9 @@
            for product = (* i j)
            while (> product max-product)
            when (palindrome-p product)
-           do (progn
-               (setq max-product product)
-               (setq max-j j)
-               (return-from inner)))
+           do (setq max-product product)
+              (setq max-j j)
+              (return-from inner))
       finally (return max-product))))
 
 
@@ -53,5 +51,5 @@
 ; user	0m0.078s
 ; sys 	0m0.004s
 (loop for i from 1 to 6
-  do (let ((palindrome (largest-palindrome-product i)))
-       (format t "Largest ~d-digits palindrome product ~d~%" i palindrome)))
+  do (format t "Largest ~d-digits palindrome product ~d~%"
+             i (largest-palindrome-product i)))

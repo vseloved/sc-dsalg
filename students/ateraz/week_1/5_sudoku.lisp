@@ -40,7 +40,7 @@
 (defun grid-key (grid)
   "Solve grid puzzle and return number in top left corner."
   ; Check if puzzle already has number in top left corner.
-  (unless (loop for col below +square-size+ never (= 0 (aref grid 0 col)))
+  (when (loop for col below +square-size+ thereis (= 0 (aref grid 0 col)))
     ; Check if puzzle can be solved.
     (unless (solve-after-cell grid 0 0)
       (error "Can't solve puzzle ~A" grid)))
@@ -58,12 +58,10 @@
   ; Find first 0 after cell in (row, col) looking left-to-right top-to-bottom.
   (loop
     while (and (< row +grid-size+) (/= 0 (aref grid row col)))
-    if (< col (- +grid-size+ 1))
+    if (< col (1- +grid-size+))
     do (incf col)
-    else
-    do (progn
-        (incf row)
-        (setq col 0)))
+    else do (incf row)
+            (setq col 0))
   (when (= row +grid-size+)
     ; All cells are filled, puzzle is solved.
     (return-from solve-after-cell t))
@@ -71,11 +69,10 @@
   (loop
     for digit in +valid-digits+
     when (valid-digit-p digit grid row col)
-    do (progn
-        ; Set digit and try to solve recursively.
-        (setf (aref grid row col) digit)
-        (when (solve-after-cell grid row col)
-          (return-from solve-after-cell t))))
+    ; Set digit and try to solve recursively.
+    do (setf (aref grid row col) digit)
+       (when (solve-after-cell grid row col)
+         (return-from solve-after-cell t)))
   ; Puzzle can not be solved. Previous cells were filled incorrectly.
   (setf (aref grid row col) 0)
   nil)

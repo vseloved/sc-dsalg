@@ -2,15 +2,14 @@
   "Compute number of ways to produce target amount using provided coins."
   ; Array where i-th element holds number of ways to produce amount i,
   ; requires one extra slot for zero sum.
-  (let ((num-ways (make-array (+ target 1))))
+  (let ((num-ways (make-array (1+ target))))
     ; There's only one way to produce 0 pence.
     (setf (aref num-ways 0) 1)
-    (loop
-      for coin in coins
-      do (loop
-           for amount from coin to target
-           ; Use one current coin to produce required amount for amount - coin.
-           do (incf (aref num-ways amount) (aref num-ways (- amount coin)))))
+    (dolist (coin coins)
+      (loop
+        for amount from coin to target
+        ; Use one current coin to produce required amount for amount - coin.
+        do (incf (aref num-ways amount) (aref num-ways (- amount coin)))))
     (aref num-ways target)))
 
 
