@@ -28,6 +28,7 @@
             (return)))))
   array)
 
+
 (defun quicksort (array)
   (when (> (length array) 1)
     ;; simple pivot selection: just use the ast element
@@ -44,6 +45,50 @@
           (quicksort (slice array 0 pivot-i))
           (quicksort (slice array (1+ pivot-i)))))
   array)
+
+
+;;; SHELL SORT 
+
+(defun gap-insertion-sort (array  gap)
+  ;;; fast, code from internet
+  (let ((length (length array)))
+    (if (< length 2) array
+      (do ((i 1 (1+ i))) ((eql i length) array)
+        (do ((x (aref array i))
+             (j i (- j gap)))
+            ((or (< (- j gap) 0)
+                 (< (aref array (1- j)) x))
+	     (setf (aref array j) x))                    ;;; !!! Difference !!!
+          (setf (aref array j) (aref array (- j gap)))
+	  )))))
+
+
+(defun shell-sort (array)
+  ;;; Shell sort implementation
+  (let ((steps '(1750 701 301 132 57 23 10 4 1)))  ;; Optimal (best known) sequence of increments for shell sort algorithm. !!!! Last element in gaps should be 1 !!!
+    (dolist (step steps array) ;; !!! modified original array at every step!!!
+      (shell-insertion-sort array step))))
+
+
+
+(defun shell-insertion-sort (array gap)
+  ;;; slow, my code
+  (let ((l (length array)))
+    (do ((i 1 (1+ i)))
+	((eql i l) array)
+      (do ((temp (aref array i))
+	   (j i (- j gap)))
+	   ((or (< (- j gap)  0)
+		(< (aref array (1- j)) temp))
+	    array)                                      ;;; !!! question is here why? :) !!!
+	(setf (aref array j) (aref array (- j gap)))
+	))))
+
+(defun gap-sort (array)
+  ;;; Shell sort implementation
+  (let ((steps '(1750 701 301 132 57 23 10 4 1)))  ;; Optimal (best known) sequence of increments for shell sort algorithm. !!!! Last element in gaps should be 1 !!!
+    (dolist (step steps array) ;; !!! modified original array at every step!!!
+      (gap-insertion-sort array step))))
 
 
 ;; test utilities
@@ -68,3 +113,9 @@
     (format t "= ~Asort of reverse sorted vector (length=~A) =~%"
             sort-name len)
     (time (funcall sort-fn vec))))
+
+(rtl-user::print-sort-timings "quicksort" 'rtl-user::quicksort (rtl-user::random-vec 10000))
+(rtl-user::print-sort-timings "selection-sort" 'rtl-user::selection-sort (rtl-user::random-vec 10000))
+(rtl-user::print-sort-timings "insertion-sort" 'rtl-user::insertion-sort (rtl-user::random-vec 10000))
+(rtl-user::print-sort-timings "gap-sort" 'rtl-user::gap-sort (rtl-user::random-vec 10000))
+(rtl-user::print-sort-timings "shell-sort" 'rtl-user::shell-sort (rtl-user::random-vec 10000))
