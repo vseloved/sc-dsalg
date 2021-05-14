@@ -16,16 +16,16 @@
             ((or (< (- j step) 0)
                  (< (aref array (1- j)) x))
 	     (setf (aref array j) x))
-          (setf (aref array j) (aref array (- j step))))))
+          (setf (aref array j) (aref array (- j step)))))))
 
 
-  (defun shell-sort (array)
+(defun shell-sort (array)
   ;;; Shell sort implementation
-    (dolist (step +gaps+ array) ;; !!! modified original array at every step!!!
-      (shell-insertion-sort array step))))
-
+  (dolist (step +gaps+ array) ;; !!! modified original array at every step!!!
+    (shell-insertion-sort array step)))
 
 ;;(rtl-user::print-sort-timings "shell-sort" 'rtl-user::shell-sort (rtl-user::random-vec 10000))
+
 
 
 
