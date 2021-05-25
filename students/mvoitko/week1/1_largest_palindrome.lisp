@@ -4,11 +4,11 @@
 
     (let* ((hi (expt 10 n))
            (max_a (- hi (expt 10 (- n 1)))))
-    
+
           (loop named zz for a from 2 to max_a
                 do (let* ((left (- hi a))
                            (right (parse-integer (reverse (write-to-string left))))
-                           (D (- (expt a 2) (* 4 right)))) 
+                           (D (- (expt a 2) (* 4 right))))
                           (when (>= D 0)
                             (let* ((root1 (/ (+ a (sqrt D)) 2))
                                    (root2 (/ (- a (sqrt D)) 2))))
